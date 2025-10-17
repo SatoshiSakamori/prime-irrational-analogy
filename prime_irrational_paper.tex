@@ -1,0 +1,94 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\geometry{a4paper, margin=1in}
+\setstretch{1.3}
+
+\title{On a Conceptual Analogy Between the Distribution of Prime Numbers and the Structure of Irrational Numbers}
+\author{Satoshi Sakamori (draft)}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note explores a conceptual analogy between two seemingly unrelated sets: prime numbers and irrational numbers. 
+Both can be viewed as \emph{residuals} that remain after systematically removing regular, periodic, or rationally describable structures from the number line. 
+We discuss a heuristic and structural comparison, and propose a formal framework to examine this analogy.
+\end{abstract}
+
+\section{Motivation}
+
+Prime numbers are the fundamental building blocks of integers, defined as numbers greater than one that cannot be expressed as the product of two smaller positive integers.  
+Irrational numbers, on the other hand, are real numbers that cannot be expressed as the ratio of two integers.
+
+The intuitive observation motivating this note is that both sets---primes and irrationals---can be understood as what remains when certain regular or periodic subsets are systematically eliminated from the number line.
+
+\section{Elimination Process as a Structural Analogy}
+
+\subsection{Prime Numbers as Residuals of Integer Sieve}
+
+Consider the classical sieve of Eratosthenes.  
+We begin with the set of integers $\mathbb{N} = \{2, 3, 4, \dots\}$ and remove all multiples of $2$, then of $3$, then of $5$, and so on.  
+At each step, we eliminate elements of the form
+\[
+n = k p_i, \quad k \in \mathbb{N},
+\]
+where $p_i$ is a prime number identified in a previous step.  
+The remaining integers---which cannot be expressed as multiples of smaller factors---are precisely the prime numbers.
+
+In this view, primes are the ``non-periodic residues'' left after removing all regularly spaced (periodic) subsets.
+
+\subsection{Irrational Numbers as Residuals of Rational Fractions}
+
+Now consider an analogous procedure in $\mathbb{R}$:  
+start with the interval $[0,1]$ and successively remove all rational numbers that can be expressed as $\frac{p}{q}$ for integers $p,q$.  
+Formally, at step $q$, remove all numbers of the form
+\[
+x = \frac{p}{q}, \quad p \in \mathbb{Z}.
+\]
+After infinitely many steps, the remaining set is precisely the set of irrational numbers in $[0,1]$.
+
+Again, these are the numbers that cannot be represented by regular, rational patterns.  
+They occupy the ``gaps'' left after all rational structures are removed.
+
+\section{Analogy and Conjectural Structure}
+
+Both processes---the sieve for primes and the removal of rationals---can be seen as iterative elimination of structured or periodic subsets:
+\begin{itemize}
+    \item In $\mathbb{N}$, periodicity arises from modular arithmetic: multiples of $p$ form arithmetic progressions with period $p$.
+    \item In $\mathbb{R}$, rational numbers $\frac{p}{q}$ form a dense but countable set that corresponds to ``rational partitions'' of the unit interval.
+\end{itemize}
+
+In both cases, the remainder is ``non-periodic'':
+\begin{itemize}
+    \item Primes: non-multiplicative residues under integer factorization.
+    \item Irrationals: non-rational residues under rational partitioning.
+\end{itemize}
+
+\paragraph{Heuristic conjecture.}  
+If we consider periodicity as a manifestation of rational structure, then primes and irrationals could be seen as distinct manifestations of ``aperiodic completeness'' in different numerical domains.  
+This analogy invites a formal exploration of whether measures of irregularity or entropy applied to the distribution of primes and to continued fraction expansions of irrationals exhibit structural parallels.
+
+\section{Future Work}
+
+Potential directions for formalization include:
+\begin{itemize}
+    \item Define an entropy-like measure for the ``irregularity'' of the prime indicator function.
+    \item Compare it to entropy of continued fraction coefficients of typical irrationals.
+    \item Explore whether a shared measure of ``rational deficiency'' exists between $\mathbb{N}$ and $\mathbb{R}$.
+\end{itemize}
+
+\section{Remarks}
+
+This note is purely heuristic and intended to provoke conceptual exploration.  
+No claims of mathematical equivalence are made.  
+The analogy may serve as a starting point for formal investigations into shared structures underlying multiplicative and rational aperiodicity.
+
+\vspace{1em}
+\noindent\textbf{Keywords:} prime numbers, irrational numbers, sieve, rationality, aperiodicity, entropy.
+
+\end{document}
