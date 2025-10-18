@@ -36,3 +36,6 @@ jobs:
           git add prime_irrational_paper.pdf
           git commit -m "Auto-build PDF from LaTeX [skip ci]" || echo "No changes to commit"
           git push
+
+permissions:
+  contents: write
