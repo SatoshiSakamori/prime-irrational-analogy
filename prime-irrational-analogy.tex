@@ -1,135 +1,57 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath, amssymb, amsthm}
-\usepackage{geometry}
-\usepackage{hyperref}
-\geometry{a4paper, margin=25mm}
-\title{Analogy Between Prime Sieve and Irrational Sieve}
-\author{Satoshi Sakamori}
-\date{\today}
+name: Build LaTeX Papers
 
-\begin{document}
-\maketitle
+on:
+  push:
+    paths:
+      - '**.tex'
+      - '.github/workflows/build-latex.yml'
+  workflow_dispatch:
 
-\begin{abstract}
-This paper explores a structural analogy between the sieve of Eratosthenes, 
-used to isolate prime numbers, and an analogous operation on the real numbers 
-that isolates irrational numbers by successively removing rationals 
-with increasing denominators. 
-Both can be interpreted as infinite filtering processes that remove 
-finite or periodic structures, leaving behind elements that cannot 
-be finitely represented.
-\end{abstract}
+jobs:
+  build-pdfs:
+    runs-on: ubuntu-latest
 
-\section{Introduction}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-The sieve of Eratosthenes removes numbers that are multiples of smaller integers, 
-leaving behind primes---numbers that cannot be expressed as products of 
-smaller integers. 
+      # ======== 1つ目: prime_irrational_paper.tex ========
+      - name: Build prime_irrational_paper.pdf
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: prime_irrational_paper.tex
+          latexmk_use_lualatex: false
+          latexmk_shell_escape: true
 
-This paper proposes an analogous process on the real number line:
-starting with the continuum $\mathbb{R}$, 
-we remove all rational numbers that can be expressed with denominators 
-below a given bound, and let that bound tend to infinity. 
-The remaining set, in the limit, consists of the irrational numbers---those 
-that cannot be finitely expressed as ratios of integers.
+      - name: Upload paper PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prime_irrational_paper
+          path: prime_irrational_paper.pdf
 
-\section{The Sieve of Eratosthenes as a Filtering Process}
+      # ======== 2つ目: prime_irrational_analogy.tex ========
+      - name: Build prime_irrational_analogy.pdf
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: prime_irrational_analogy.tex
+          latexmk_use_lualatex: false
+          latexmk_shell_escape: true
 
-Let $\mathbb{N} = \{2, 3, 4, \ldots\}$. 
-For each integer $p \ge 2$, define the set of multiples:
-\[
-M_p = \{ n \in \mathbb{N} \mid p \text{ divides } n \}.
-\]
-The sieve of Eratosthenes removes all such $M_p$ for each $p$ in increasing order, 
-starting from $p=2$.
+      - name: Upload analogy PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prime_irrational_analogy
+          path: prime_irrational_analogy.pdf
 
-Formally, define the remaining set after sieving up to $p = P$ as
-\[
-S_P = \mathbb{N} \setminus \bigcup_{p \le P} M_p.
-\]
-Then, the primes are obtained in the limit:
-\[
-\mathbb{P} = \lim_{P \to \infty} S_P.
-\]
-This process removes all integers with finite factorizations involving 
-smaller primes, leaving only those which cannot be decomposed---the primes themselves.
+      # ======== 両方まとめてコミット ========
+      - name: Commit PDFs back to repository
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add prime_irrational_paper.pdf prime_irrational_analogy.pdf
+          git commit -m "Auto-build PDFs from LaTeX [skip ci]" || echo "No changes to commit"
+          git push
 
-\section{An Analogous Sieve on the Real Numbers}
-
-Now, consider the real line $\mathbb{R}$. 
-For each positive integer $q$, define the set of rationals with denominator $q$:
-\[
-R_q = \left\{ \frac{p}{q} \in \mathbb{Q} \mid p \in \mathbb{Z} \right\}.
-\]
-These sets form a countable union:
-\[
-\mathbb{Q} = \bigcup_{q=1}^{\infty} R_q.
-\]
-
-We define a filtration of $\mathbb{R}$ analogous to the prime sieve:
-\[
-T_Q = \mathbb{R} \setminus \bigcup_{q \le Q} R_q.
-\]
-Then, as $Q \to \infty$, the limit set is
-\[
-\lim_{Q \to \infty} T_Q = \mathbb{R} \setminus \mathbb{Q},
-\]
-which is precisely the set of irrational numbers.
-
-This ``irrational sieve'' removes all points that can be expressed as ratios 
-of finite integers, just as the Eratosthenes sieve removes all numbers 
-that can be expressed as products of smaller integers.
-
-\section{Structural Analogy}
-
-Both sieves share the following structural properties:
-\begin{enumerate}
-    \item \textbf{Base domain:} The natural numbers $\mathbb{N}$ vs. 
-          the real numbers $\mathbb{R}$.
-    \item \textbf{Finite representability:} 
-          Integers with finite factorizations (composites) correspond 
-          to real numbers with finite rational representations.
-    \item \textbf{Filtering rule:} 
-          Removal of elements generated by finite combinations 
-          (products or rational divisions).
-    \item \textbf{Limit structure:} 
-          The remaining sets (primes and irrationals) 
-          are those that cannot be expressed by any finite process 
-          within the generating rule.
-\end{enumerate}
-
-Thus, primes and irrationals both emerge as residual entities 
-beyond finite generative closure:
-\[
-\text{Primes: } \mathbb{P} = \mathbb{N} \setminus 
-\bigcup_{p} M_p,
-\quad
-\text{Irrationals: } \mathbb{R} \setminus \bigcup_{q} R_q.
-\]
-
-\section{Conclusion and Outlook}
-
-Both sieves can be seen as instances of a broader concept: 
-\textit{a filtration process that removes all finitely generable elements 
-to reveal the infinitary residue.}
-In this sense, primes and irrationals occupy analogous positions 
-in their respective domains.
-
-This analogy opens potential investigations into:
-\begin{itemize}
-    \item Information-theoretic measures of ``finite generability''.
-    \item Topological or measure-theoretic parallels between 
-          $\mathbb{P}$ and $\mathbb{R}\setminus\mathbb{Q}$.
-    \item Computational analogs of ``sieve complexity'' 
-          across discrete and continuous systems.
-\end{itemize}
-
-\section*{Acknowledgement}
-
-The conceptual inspiration for this analogy originates from 
-a thought experiment by Satoshi Sakamori, 
-who proposed viewing irrational numbers as the residue left after 
-successively removing all rational partitions from the real line, 
-in analogy with the sieve of Eratosthenes.
-
-\end{document}
+permissions:
+  contents: write
