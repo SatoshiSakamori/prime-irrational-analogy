@@ -1,4 +1,4 @@
-name: Build LaTeX Paper
+name: Build LaTeX Papers
 
 on:
   push:
@@ -8,33 +8,49 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-pdf:
+  build-pdfs:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up LaTeX environment
+      # ======== 1つ目: prime_irrational_paper.tex ========
+      - name: Build prime_irrational_paper.pdf
         uses: xu-cheng/latex-action@v3
         with:
           root_file: prime_irrational_paper.tex
           latexmk_use_lualatex: false
           latexmk_shell_escape: true
 
-      - name: Upload PDF as artifact
+      - name: Upload paper PDF as artifact
         uses: actions/upload-artifact@v4
         with:
           name: prime_irrational_paper
           path: prime_irrational_paper.pdf
 
-      - name: Commit PDF back to repository
+      # ======== 2つ目: prime_irrational_analogy.tex ========
+      - name: Build prime_irrational_analogy.pdf
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: prime_irrational_analogy.tex
+          latexmk_use_lualatex: false
+          latexmk_shell_escape: true
+
+      - name: Upload analogy PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prime_irrational_analogy
+          path: prime_irrational_analogy.pdf
+
+      # ======== 両方まとめてコミット ========
+      - name: Commit PDFs back to repository
         if: github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add prime_irrational_paper.pdf
-          git commit -m "Auto-build PDF from LaTeX [skip ci]" || echo "No changes to commit"
+          git add prime_irrational_paper.pdf prime_irrational_analogy.pdf
+          git commit -m "Auto-build PDFs from LaTeX [skip ci]" || echo "No changes to commit"
           git push
 
 permissions:
